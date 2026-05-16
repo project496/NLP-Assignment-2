@@ -9,16 +9,9 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-
-# Download NLTK Data
 nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('omw-1.4')
-
-# ==========================
-# READ PDF
-# ==========================
-
 pdf_file = open('alice.pdf', 'rb')
 
 pdf_reader = PyPDF2.PdfReader(pdf_file)
@@ -28,10 +21,6 @@ total_pages = len(pdf_reader.pages)
 print("\n===== TOTAL PAGES =====")
 print(total_pages)
 
-# ==========================
-# EXTRACT TEXT
-# ==========================
-
 text = ""
 
 for page in pdf_reader.pages:
@@ -39,39 +28,15 @@ for page in pdf_reader.pages:
 
 print("\n===== SAMPLE EXTRACTED TEXT =====")
 print(text[:1000])
-
-# ==========================
-# PREPROCESSING
-# ==========================
-
-# Convert to lowercase
 text = text.lower()
-
-# Remove numbers
 text = re.sub(r'\d+', '', text)
-
-# Remove special symbols
 text = re.sub(r'[^a-zA-Z\s]', '', text)
-
-# Remove extra spaces
 text = re.sub(r'\s+', ' ', text)
-
-# Remove punctuation
 text = text.translate(str.maketrans('', '', string.punctuation))
 
 print("\n===== CLEANED TEXT =====")
 print(text[:500])
-
-# ==========================
-# TOKENIZATION
-# ==========================
-
 words = text.split()
-
-# ==========================
-# STOP WORD REMOVAL
-# ==========================
-
 stop_words = set(stopwords.words('english'))
 
 filtered_words = [word for word in words if word not in stop_words]
@@ -84,32 +49,18 @@ print(stopword_count)
 print("\n===== VALID WORD COUNT =====")
 print(len(filtered_words))
 
-# ==========================
-# STEMMING
-# ==========================
-
 ps = PorterStemmer()
 
 stemmed_words = [ps.stem(word) for word in filtered_words[:50]]
 
 print("\n===== STEMMING OUTPUT =====")
 print(stemmed_words)
-
-# ==========================
-# LEMMATIZATION
-# ==========================
-
 lemmatizer = WordNetLemmatizer()
 
 lemmatized_words = [lemmatizer.lemmatize(word) for word in filtered_words[:50]]
 
 print("\n===== LEMMATIZATION OUTPUT =====")
 print(lemmatized_words)
-
-# ==========================
-# ONE HOT ENCODING
-# ==========================
-
 sample_text = [' '.join(filtered_words[:20])]
 
 cv = CountVectorizer(binary=True)
@@ -123,10 +74,6 @@ df_onehot = pd.DataFrame(
 
 print("\n===== ONE HOT ENCODING =====")
 print(df_onehot)
-
-# ==========================
-# TF-IDF
-# ==========================
 
 clean_text = ' '.join(filtered_words)
 
@@ -145,10 +92,6 @@ df_tfidf = pd.DataFrame({
 
 print("\n===== TF-IDF OUTPUT =====")
 print(df_tfidf)
-
-# ==========================
-# PLOTLY GRAPH
-# ==========================
 
 fig = px.scatter(
     df_tfidf,
